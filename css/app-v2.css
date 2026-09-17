@@ -626,8 +626,12 @@ body.drawer-open #xiaoman-wrap { display: none !important; }
 }
 #xiaoman-wrap.xm-hidden{display:none!important}
 #xiaoman-wrap.xm-roaming{transition:left 3.8s cubic-bezier(.35,.05,.25,1),top 3.8s cubic-bezier(.35,.05,.25,1)}
-@keyframes xm-hop-body{0%,100%{margin-top:0}45%{margin-top:-9px}70%{margin-top:2px}}
-#xiaoman-wrap.xm-hop #xm-doll{animation:xm-hop-body .9s ease-in-out}
+@keyframes xm-hop-body{0%,100%{margin-top:0}18%{margin-top:-16px}34%{margin-top:2px}55%{margin-top:-12px}72%{margin-top:1px}}
+#xiaoman-wrap.xm-hop #xm-doll{animation:xm-hop-body 1.55s cubic-bezier(.3,.7,.35,1)}
+#xiaoman-wrap.xm-celebrating #xm-doll{transform:translateX(-50%) translateY(0)}
+#xiaoman-wrap.xm-celebrating .xm-img-sleep{opacity:1!important;transform:scale(1.08)!important;animation:none!important}
+#xiaoman-wrap.xm-celebrating .xm-img-rubbing,#xiaoman-wrap.xm-celebrating .xm-img-peek{opacity:0!important}
+#xiaoman-wrap.xm-celebrating .xm-menu,#xiaoman-wrap.xm-celebrating .xm-bubble{opacity:0!important;pointer-events:none!important}
 .setting-help{display:block;margin-top:6px;color:var(--text-3);font-size:11px;line-height:1.5}
 .calendar-export-main{margin-right:auto!important;background:rgba(110,184,255,.16)!important;color:var(--work-deep)!important;font-weight:700}
 .agenda-calendar{width:29px;height:29px;border:0;border-radius:9px;background:rgba(110,184,255,.12);color:var(--work-deep);cursor:pointer}.agenda-calendar.exported{background:#e8f7ee;color:#258553}

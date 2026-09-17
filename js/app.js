@@ -452,7 +452,6 @@ const App = (function () {
           else rec[key] = b.checked ? on : off;
           if (['todos','plans'].includes(colKey.collection||Store.keyOf(colKey)) && key === 'status') rec.completedDate = rec.status === '完成' ? todayKey() : '';
           Store.updateRecord(colKey, rec._id, rec);
-          if((rec.done===true||['完成','已完成','已买'].includes(rec.status))&&typeof Xiaoman!=='undefined'&&Xiaoman.celebrate)Xiaoman.celebrate();
           // 心愿清单 ↔ 购物清单 双向联动：购物项标记已买 → 回写心愿状态
           if ((colKey.collection === 'items' || (tab.collection === 'items')) && rec.linkWish && rec.status === '已买') {
             const wish = Store.getList({ collection: 'wishes' }).find(w => w._id === rec.linkWish);
@@ -685,7 +684,7 @@ const App = (function () {
     return{due:started&&r.status!=='已完成'&&r.status!=='读完',count:r.status==='已完成'||r.status==='读完'?1:0,target:1,label:r.date||'单次'};
   }
   function learningDoneOn(r,key){return (r.completionDates||[]).includes(key)||(learningCycle(r)==='不重复'&&['已完成','读完'].includes(r.status)&&r.completedDate===key);}
-  function completeLearningCycle(collection,id,kind){const r=Store.getList(collection).find(x=>x._id===id);if(!r)return;const cycle=learningCycle(r),tk=todayKey();if(cycle==='不重复'){Store.updateRecord(collection,id,{status:kind==='book'?'读完':'已完成',completedDate:tk});}else{const dates=Array.from(new Set([...(Array.isArray(r.completionDates)?r.completionDates:[]),tk])).sort();Store.updateRecord(collection,id,{completionDates:dates,lastCompletedDate:tk});}if(typeof Xiaoman!=='undefined'&&Xiaoman.celebrate)Xiaoman.celebrate();renderContent();}
+  function completeLearningCycle(collection,id,kind){const r=Store.getList(collection).find(x=>x._id===id);if(!r)return;const cycle=learningCycle(r),tk=todayKey();if(cycle==='不重复'){Store.updateRecord(collection,id,{status:kind==='book'?'读完':'已完成',completedDate:tk});}else{const dates=Array.from(new Set([...(Array.isArray(r.completionDates)?r.completionDates:[]),tk])).sort();Store.updateRecord(collection,id,{completionDates:dates,lastCompletedDate:tk});}renderContent();}
   function bindLearningCycles(tab,kind){document.querySelectorAll('[data-learning-complete]').forEach(b=>b.onclick=()=>completeLearningCycle(Store.keyOf(tab),b.dataset.learningComplete,kind));}
   function renderStudyToday(tab) {
     const all = Store.getList(tab);

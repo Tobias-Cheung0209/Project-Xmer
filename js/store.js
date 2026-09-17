@@ -22,6 +22,17 @@ const Store = (function () {
   function persist(next) { try { localStorage.setItem(KEY, JSON.stringify(next)); data = next; return true; } catch (e) { console.error('persist failed', e); alert('保存失败：浏览器本地空间可能已满。请先导出 JSON 备份并减少照片。'); return false; } }
   function mutate(fn) { const next = normalizeData(JSON.parse(JSON.stringify(data))); fn(next); return persist(next); }
   const visible = arr => (arr || []).filter(r => !r.deletedAt);
+  const COMPLETE_STATUSES = new Set(['完成', '已完成', '已买', '读完', '已结算', '已检查']);
+  const isComplete = r => !!r && (r.done === true || COMPLETE_STATUSES.has(r.status));
+  function isNewCompletion(before, after) {
+    if (!after) return false;
+    if (!isComplete(before) && isComplete(after)) return true;
+    if ((after.completionDates || []).length > (before?.completionDates || []).length) return true;
+    return ['lastCompletedDate', 'completedDate', 'lastDate'].some(key => !!after[key] && after[key] !== before?.[key]);
+  }
+  function notifyCompletion(collection, record) {
+    window.dispatchEvent(new CustomEvent('xmer:completed', { detail: { collection, id: record && record._id } }));
+  }
   function snapshot() { try { const list = JSON.parse(localStorage.getItem(SNAP_KEY) || '[]'); list.unshift({ at: new Date().toISOString(), json: JSON.stringify(data) }); localStorage.setItem(SNAP_KEY, JSON.stringify(list.slice(0, 3))); } catch (e) { console.warn('snapshot failed', e); } }
   function mergeRecords(local, incoming, stats) {
     const map = new Map(); (local || []).forEach(r => map.set(r._id, normalizeRecord(r)));
@@ -34,8 +45,8 @@ const Store = (function () {
     keyOf,
     getList(x, opts) { const arr = data.collections[keyOf(x)] || []; return opts && opts.includeDeleted ? arr : visible(arr); },
     saveList(x, arr) { return mutate(d => { d.collections[keyOf(x)] = (arr || []).map(normalizeRecord); }); },
-    addRecord(x, rec) { const r = normalizeRecord(rec), now = new Date().toISOString(); r.createdAt = now; r.updatedAt = now; return mutate(d => { const k = keyOf(x); d.collections[k] = d.collections[k] || []; d.collections[k].unshift(r); }) ? r : null; },
-    updateRecord(x, id, rec) { return mutate(d => { const k = keyOf(x), arr = d.collections[k] || [], i = arr.findIndex(r => r._id === id); if (i >= 0) arr[i] = normalizeRecord(Object.assign({}, arr[i], rec, { updatedAt: new Date().toISOString(), deletedAt: null })); }); },
+    addRecord(x, rec) { const r = normalizeRecord(rec), now = new Date().toISOString(), k = keyOf(x); r.createdAt = now; r.updatedAt = now; const ok = mutate(d => { d.collections[k] = d.collections[k] || []; d.collections[k].unshift(r); }); if (ok && isNewCompletion(null, r)) notifyCompletion(k, r); return ok ? r : null; },
+    updateRecord(x, id, rec) { const k = keyOf(x), before = (data.collections[k] || []).find(r => r._id === id); let updated = null; const ok = mutate(d => { const arr = d.collections[k] || [], i = arr.findIndex(r => r._id === id); if (i >= 0) { arr[i] = normalizeRecord(Object.assign({}, arr[i], rec, { updatedAt: new Date().toISOString(), deletedAt: null })); updated = arr[i]; } }); if (ok && updated && isNewCompletion(before, updated)) notifyCompletion(k, updated); return ok; },
     deleteRecord(x, id) { return mutate(d => { const k = keyOf(x), r = (d.collections[k] || []).find(v => v._id === id); if (r) { r.deletedAt = new Date().toISOString(); r.updatedAt = r.deletedAt; } }); },
     getSetting(k, def) { return Object.prototype.hasOwnProperty.call(data.settings, k) ? data.settings[k] : def; },
     setSetting(k, val) { return mutate(d => { d.settings[k] = val; d.settingTimes[k] = new Date().toISOString(); }); },

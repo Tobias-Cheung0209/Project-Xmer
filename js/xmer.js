@@ -11,7 +11,7 @@ const Xiaoman = (function () {
 
   let wrap, doll, bubble, menu, panel, panelMask, grid, search, shock, particlesEl, sleepImg, rubbingImg, peekImg;
   let bubbleTimer = null, wakeTimers = [], roamTimer = null, pauseUntil = 0, mascotMode = 'dynamic';
-  let poseTimer = null, dialogPoseIndex = 0;
+  let poseTimer = null, celebrationTimer = null, dialogPoseIndex = 0;
   const POSES = {
     sleep: 'images/xmer-sleeping.png?v=1', idle: 'images/xmer-idle.png?v=1',
     walk: 'images/xmer-walking.png?v=1', stretch: 'images/xmer-stretching.png?v=1',
@@ -385,7 +385,27 @@ const Xiaoman = (function () {
     scheduleRoam(9000+Math.random()*9000);
   }
   function applyMode(mode){mascotMode=['dynamic','idle','hidden'].includes(mode)?mode:'dynamic';clearRoam();wrap.classList.toggle('xm-hidden',mascotMode==='hidden');if(mascotMode==='dynamic')scheduleRoam(5000);else if(mascotMode==='idle')clampToSafeViewport();}
-  function celebrate(){if(!wrap||mascotMode==='hidden')return;spawnParticles(7);setIdlePose('surprise',1100);wrap.classList.remove('xm-hop');void wrap.offsetWidth;wrap.classList.add('xm-hop');setTimeout(()=>wrap?.classList.remove('xm-hop'),900);}
+  function celebrate(){
+    if(!wrap||mascotMode==='hidden'||!sleepImg)return;
+    clearTimeout(celebrationTimer);
+    clearTimeout(poseTimer);
+    const previousSrc=sleepImg.getAttribute('src')||POSES.sleep;
+    const previousPose=wrap.dataset.pose||'sleep';
+    wrap.classList.remove('xm-hop');
+    wrap.classList.add('xm-celebrating');
+    wrap.dataset.pose='surprise';
+    sleepImg.src=POSES.surprise;
+    spawnParticles(14);
+    setTimeout(()=>{if(wrap?.classList.contains('xm-celebrating'))spawnParticles(9);},650);
+    void wrap.offsetWidth;
+    wrap.classList.add('xm-hop');
+    celebrationTimer=setTimeout(()=>{
+      wrap?.classList.remove('xm-hop','xm-celebrating');
+      if(sleepImg)sleepImg.src=previousSrc;
+      if(wrap)wrap.dataset.pose=previousPose;
+      requestAnimationFrame(clampToSafeViewport);
+    },2200);
+  }
   function safeInsets() {
     const probe=document.createElement('i');
     probe.style.cssText='position:fixed;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';
@@ -440,6 +460,7 @@ const Xiaoman = (function () {
     search = $('xm-search');
     shock = $('xm-shock');
     particlesEl = $('xm-particles');
+    window.addEventListener('xmer:completed', celebrate);
     sleepImg = $('xm-img-sleep');
     rubbingImg = $('xm-img-rubbing');
     peekImg = $('xm-img-peek');
