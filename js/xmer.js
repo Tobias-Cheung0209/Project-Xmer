@@ -180,7 +180,9 @@ const Xiaoman = (function () {
     }, options && options.duration ? options.duration : 2800);
   }
   function sayReminder(summary) {
-    if (!summary || typeof summary === 'string') { say(summary || randomLine()); return; }
+    const prefix = '魏姐， ';
+    const withPrefix = text => prefix + String(text || '').replace(/^魏姐[，,]\s*/, '');
+    if (!summary || typeof summary === 'string') { say(withPrefix(summary || randomLine())); return; }
     hideBubble();
     bubble.textContent = '';
     bubble.classList.add('xm-bubble-reminder');
@@ -190,7 +192,7 @@ const Xiaoman = (function () {
     closeBtn.setAttribute('aria-label', '关闭');
     closeBtn.textContent = '×';
     const lead = document.createElement('b');
-    lead.textContent = summary.lead;
+    lead.textContent = withPrefix(summary.lead);
     const detail = document.createElement('span');
     detail.textContent = summary.detail;
     const viewBtn = document.createElement('button');
