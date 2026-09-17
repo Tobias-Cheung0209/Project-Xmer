@@ -346,11 +346,11 @@ const Xiaoman = (function () {
   function scheduleRoam(delay){clearTimeout(roamTimer);if(mascotMode!=='dynamic')return;roamTimer=setTimeout(roamOnce,delay||7000+Math.random()*7000);}
   function roamOnce(){
     if(activityPaused()){scheduleRoam(5000);return;}
+    // 站立、走路与伸懒腰只切换姿势，不改变吉祥物当前落点。
     setIdlePose(Math.random() < .28 ? 'stretch' : 'walk');
-    const vv=window.visualViewport,inset=safeInsets(),left=(vv?.offsetLeft||0)+inset.left+12,top=(vv?.offsetTop||0)+inset.top+12,right=(vv?.offsetLeft||0)+(vv?.width||innerWidth)-inset.right-12,bottom=(vv?.offsetTop||0)+(vv?.height||innerHeight)-inset.bottom-24;
-    const rect=doll.getBoundingClientRect(),range=innerWidth>820?180:Math.min(96,(vv?.width||innerWidth)*.28),cx=rect.left+rect.width/2,cy=rect.top+rect.height/2;
-    const nx=Math.max(left+rect.width/2,Math.min(right-rect.width/2,cx+(Math.random()-.5)*range*2)),floor=Math.max(top+rect.height/2,Math.min(bottom-rect.height/2,cy+(Math.random()-.42)*70));
-    wrap.classList.add('xm-roaming');if(Math.random()>.55)wrap.classList.add('xm-hop');positionAt(nx,floor);setTimeout(()=>{wrap?.classList.remove('xm-hop','xm-roaming');setIdlePose('idle',1800);},3900);scheduleRoam(9000+Math.random()*9000);
+    clampToSafeViewport();
+    setTimeout(()=>{setIdlePose('idle',1800);},3900);
+    scheduleRoam(9000+Math.random()*9000);
   }
   function applyMode(mode){mascotMode=['dynamic','idle','hidden'].includes(mode)?mode:'dynamic';clearRoam();wrap.classList.toggle('xm-hidden',mascotMode==='hidden');if(mascotMode==='dynamic')scheduleRoam(5000);else if(mascotMode==='idle')clampToSafeViewport();}
   function celebrate(){if(!wrap||mascotMode==='hidden')return;spawnParticles(7);setIdlePose('surprise',1100);wrap.classList.remove('xm-hop');void wrap.offsetWidth;wrap.classList.add('xm-hop');setTimeout(()=>wrap?.classList.remove('xm-hop'),900);}
