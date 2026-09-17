@@ -127,7 +127,7 @@ const MODULES = [
   /* ---- 学习区（工作·蓝，原「学习专区」改名） ---- */
   {
     id: 'study', name: '学习区', icon: '📚', group: 'work', render: 'tabs',
-    desc: '下班后 · 股票/摄影/音乐',
+    desc: '喜欢什么，就慢慢学起来',
     tabs: [
       {
         id: 'today', name: '今日内容', type: 'list', collection: 'studyTasks', special: 'studyToday',
