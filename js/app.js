@@ -1835,7 +1835,7 @@ const App = (function () {
       <div class="home-dashboard">
         <div class="hero-card">
           <div class="hero-lifestyle" aria-hidden="true">
-            <div class="hero-flourish"><i></i><i></i><b>✦</b><em>✧</em></div>
+            <div class="hero-accent"><b>♥</b><i>✦</i><em>✧</em></div>
             <div class="hero-slow">生活很美<br>慢慢来</div>
             <div class="hero-plant"><i></i><i></i><i></i><b></b></div>
             <div class="hero-books"><span>Good</span><span>Things</span><span>Take Time</span></div>
