@@ -95,7 +95,7 @@ const MODULES = [
 
   /* ---- 积跬（工作·蓝，独立不并入） ---- */
   {
-    id: 'jikui', name: '积跬', icon: '🌱', group: 'work', render: 'tabs',
+    id: 'jikui', name: '积跬', icon: '🌱', group: 'work', render: 'tabs', nestedIn: 'toolbox',
     desc: '公司事务 · 独立',
     tabs: [
       { id: 'board', name: '看板', type: 'list', collection: 'todos', special: 'jikuiBoard', fields: [] },
@@ -439,7 +439,7 @@ const MODULES = [
   },
 
   {
-    id: 'invest', name: '投资', icon: '📈', group: 'work', render: 'tabs', desc: '持仓 · 检查 · 复盘',
+    id: 'invest', name: '投资', icon: '📈', group: 'work', render: 'tabs', nestedIn: 'toolbox', desc: '持仓 · 检查 · 复盘',
     tabs: [
       { id: 'overview', name: '总览', type: 'list', special: 'investOverview', fields: [] },
       { id: 'holdings', name: '持仓', type: 'list', collection: 'investHoldings', special: 'investHoldings', fields: [
@@ -485,8 +485,10 @@ const MODULES = [
   /* ---- 工具箱（核心·蓝） ---- */
   {
     id: 'toolbox', name: '工具箱', icon: '🧰', group: 'work', render: 'tabs',
-    desc: '通讯录 · 柚子',
+    desc: '积跬 · 投资 · 通讯录 · 柚子',
     tabs: [
+      { id: 'jikui', name: '积跬', type: 'list', special: 'toolboxPortal', targetModule: 'jikui', fields: [] },
+      { id: 'invest', name: '投资', type: 'list', special: 'toolboxPortal', targetModule: 'invest', fields: [] },
       {
         id: 'contacts', name: '朋友通讯录', type: 'list', collection: 'contacts',
         fields: [

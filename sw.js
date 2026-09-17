@@ -1,7 +1,7 @@
-const CACHE = 'xmer-shell-v1';
+const CACHE = 'xmer-shell-v3';
 const FILES = [
-  './','index.html','css/style.css?v=1','css/app-v2.css?v=1','js/config.js?v=1','js/travel-areas.js?v=54','js/city-geo.js?v=54','js/store.js?v=54','js/topbar.js?v=54','js/app.js?v=1','js/xmer.js?v=1','manifest.webmanifest',
-  'images/xmer-sleeping.png?v=1','images/xmer-rubbing.png?v=1','images/xmer-peek.png?v=1','images/xmer-idle.png?v=1','images/xmer-walking.png?v=1','images/xmer-stretching.png?v=1','images/xmer-toast.png?v=1','images/xmer-surprised.png?v=1','images/china-map.png?v=54','images/world-map.png?v=54',
+  './','index.html','css/style.css?v=1','css/app-v2.css?v=3','js/config.js?v=3','js/travel-areas.js?v=54','js/city-geo.js?v=54','js/store.js?v=54','js/topbar.js?v=54','js/app.js?v=3','js/xmer.js?v=3','manifest.webmanifest',
+  'images/xmer-sleeping.png?v=1','images/xmer-rubbing.png?v=1','images/xmer-peek.png?v=1','images/xmer-idle.png?v=1','images/xmer-walking.png?v=1','images/xmer-stretching.png?v=1','images/xmer-toast.png?v=1','images/xmer-surprised.png?v=1','images/xmer-hero-perch.png?v=2','images/china-map.png?v=54','images/world-map.png?v=54',
   'icon-192.png','icon-512.png','apple-touch-icon.png'
 ];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)));self.skipWaiting();});

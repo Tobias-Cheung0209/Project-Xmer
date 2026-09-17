@@ -36,7 +36,7 @@ const App = (function () {
   /* ---------------- 导航 ---------------- */
   function renderNav() {
     const nav = document.getElementById('sidebar-nav');
-    nav.innerHTML = MODULES.map(m => `
+    nav.innerHTML = MODULES.filter(m => !m.nestedIn).map(m => `
       <button class="nav-item group-${m.group}" data-mod="${m.id}">
         <span class="nav-icon">${m.icon}</span>
         <span class="nav-label">${esc(m.name)}</span>
@@ -404,6 +404,8 @@ const App = (function () {
       'jikui:board': renderJikuiBoard,
       'jikui:analyze': renderJikuiAnalyze,
       'toolbox:youzi': renderYouzi,
+      'toolbox:jikui': renderToolboxPortal,
+      'toolbox:invest': renderToolboxPortal,
       'invest:market': renderInvestMarket,
       'invest:logs': renderStockLog,
       'invest:overview': renderInvestOverview,
@@ -412,6 +414,20 @@ const App = (function () {
       'money:budget': renderMoneyBudget,
     };
     return map[modId + ':' + tabId] || null;
+  }
+
+  function renderToolboxPortal(tab) {
+    const target = MODULE_MAP[tab.targetModule];
+    if (!target) return '<div class="empty-state"><div class="empty-state-text">模块暂不可用</div></div>';
+    const features = target.id === 'jikui'
+      ? ['看板与公司待办', '统计分析与执行回顾', '原有记录完整保留']
+      : ['持仓与投资假设', '检查清单与复盘', '全球行情与原有记录'];
+    return `<section class="toolbox-portal-card group-${target.group}">
+      <span class="toolbox-portal-icon">${target.icon}</span>
+      <div><small>工具箱内的独立空间</small><h3>${esc(target.name)}</h3><p>${esc(target.desc || '')}</p></div>
+      <ul>${features.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+      <button type="button" data-goto="${target.id}">进入${esc(target.name)} <i>›</i></button>
+    </section>`;
   }
 
   function bindSpecial(modId, tab) {
@@ -1813,11 +1829,17 @@ const App = (function () {
         ${w.foot ? `<div class="module-tile-foot">${esc(w.foot)}</div>` : ''}
       </div>`;
     };
-    const ids={daily:['discipline','kitchen','jikui','study','money','life'],review:['rigong','invest','travel'],more:['fun','files','toolbox']};
+    const ids={daily:['discipline','kitchen','study','money','life'],review:['rigong','travel'],more:['fun','files','toolbox']};
     const tiles=ids.daily.map(id=>tileFor(MODULE_MAP[id])).join(''),reviewTiles=ids.review.map(id=>tileFor(MODULE_MAP[id])).join(''),moreTiles=ids.more.map(id=>tileFor(MODULE_MAP[id])).join('');
     return `
       <div class="home-dashboard">
         <div class="hero-card">
+          <div class="hero-lifestyle" aria-hidden="true">
+            <div class="hero-slow">生活很美<br>慢慢来 <i>♥</i></div>
+            <div class="hero-plant"><i></i><i></i><i></i><b></b></div>
+            <div class="hero-books"><span>Good</span><span>Things</span><span>Take Time</span></div>
+            <img class="hero-perch-cat" src="images/xmer-hero-perch.png?v=2" alt="">
+          </div>
           <div class="hero-top">
             <div style="display:flex;align-items:center;gap:12px;">
               <div class="hero-avatar" ${avatar ? `style="background-image:url(${esc(avatar)})"` : ''}>${avatar ? '' : esc(name.slice(0, 1))}</div>

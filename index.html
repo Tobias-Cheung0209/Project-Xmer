@@ -18,7 +18,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Xmer">
   <link rel="stylesheet" href="css/style.css?v=1">
-  <link rel="stylesheet" href="css/app-v2.css?v=1">
+  <link rel="stylesheet" href="css/app-v2.css?v=3">
 </head>
 <body>
   <!-- 梦幻背景装饰 -->
@@ -96,20 +96,20 @@
     </div>
   </div>
 
-  <script src="js/config.js?v=1"></script>
+  <script src="js/config.js?v=3"></script>
   <script src="js/travel-areas.js?v=54"></script>
   <script src="js/city-geo.js?v=54"></script>
   <script src="js/store.js?v=54"></script>
   <script src="js/topbar.js?v=54"></script>
-  <script src="js/app.js?v=1"></script>
-  <script src="js/xmer.js?v=1"></script>
+  <script src="js/app.js?v=3"></script>
+  <script src="js/xmer.js?v=3"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       Topbar.init();
       App.init();
       Xiaoman.init();
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js?v=1').catch(function () {});
+        navigator.serviceWorker.register('sw.js?v=3').catch(function () {});
       }
     });
   </script>

@@ -21,8 +21,15 @@ const Xiaoman = (function () {
   function setIdlePose(name, duration) {
     if (!sleepImg || !POSES[name]) return;
     clearTimeout(poseTimer);
+    if (wrap) wrap.dataset.pose = name;
     sleepImg.src = POSES[name];
-    if (duration) poseTimer = setTimeout(() => { sleepImg.src = POSES.sleep; }, duration);
+    sleepImg.onload = () => requestAnimationFrame(clampToSafeViewport);
+    requestAnimationFrame(clampToSafeViewport);
+    if (duration) poseTimer = setTimeout(() => {
+      wrap.dataset.pose = 'sleep';
+      sleepImg.src = POSES.sleep;
+      requestAnimationFrame(clampToSafeViewport);
+    }, duration);
   }
 
   function $(id) { return document.getElementById(id); }
@@ -252,7 +259,7 @@ const Xiaoman = (function () {
   function renderModules(q) {
     const kw = (q || '').trim();
     const list = (typeof MODULES !== 'undefined' ? MODULES : []).filter(m =>
-      !kw || m.name.includes(kw) || (m.desc || '').includes(kw));
+      !m.nestedIn && (!kw || m.name.includes(kw) || (m.desc || '').includes(kw)));
     grid.innerHTML = list.length ? list.map(m => `
       <button class="xm-mod" data-mod="${esc(m.id)}">
         <span class="xm-mod-icon">${m.icon}</span>
@@ -403,6 +410,7 @@ const Xiaoman = (function () {
     particlesEl = $('xm-particles');
     sleepImg = $('xm-img-sleep');
     if (!wrap || !doll) return;
+    setIdlePose('sleep');
 
     // 旧版本的位置记录（底部角落）不再适用，清除
     try { localStorage.removeItem(LS_POS_OLD); } catch (e) {}
