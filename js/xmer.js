@@ -11,7 +11,7 @@ const Xiaoman = (function () {
 
   let wrap, doll, bubble, menu, panel, panelMask, grid, search, shock, particlesEl, sleepImg, rubbingImg, peekImg;
   let bubbleTimer = null, wakeTimers = [], roamTimer = null, pauseUntil = 0, mascotMode = 'dynamic';
-  let poseTimer = null;
+  let poseTimer = null, dialogPoseIndex = 0;
   const POSES = {
     sleep: 'images/xmer-sleeping.png?v=1', idle: 'images/xmer-idle.png?v=1',
     walk: 'images/xmer-walking.png?v=1', stretch: 'images/xmer-stretching.png?v=1',
@@ -19,7 +19,8 @@ const Xiaoman = (function () {
     lickPaw: 'images/xmer-lick-paw.png?v=1', knead: 'images/xmer-knead.png?v=1',
     headTilt: 'images/xmer-head-tilt.png?v=1', yawn: 'images/xmer-yawn.png?v=1',
     earScratch: 'images/xmer-ear-scratch.png?v=1', hugTail: 'images/xmer-hug-tail.png?v=1',
-    chinRest: 'images/xmer-chin-rest.png?v=1', noseLick: 'images/xmer-nose-lick.png?v=1'
+    chinRest: 'images/xmer-chin-rest.png?v=1', noseLick: 'images/xmer-nose-lick.png?v=1',
+    dialogCorner: 'images/xmer-dialog-corner.png?v=1'
   };
   const IDLE_CHOICES = [
     { name:'toast', weight:24, duration:6500 },
@@ -113,9 +114,11 @@ const Xiaoman = (function () {
     hideBubble();
     hidePanel();
     const wakeRoute = Math.random() < .5 ? 'yawn' : 'rub';
+    const dialogPose = dialogPoseIndex++ % 2 === 0 ? 'sit' : 'corner';
     wrap.dataset.wake = wakeRoute;
+    wrap.dataset.dialogPose = dialogPose;
     if (rubbingImg) rubbingImg.src = wakeRoute === 'yawn' ? POSES.yawn : 'images/xmer-rubbing.png?v=1';
-    if (peekImg) peekImg.src = POSES.idle;
+    if (peekImg) peekImg.src = dialogPose === 'sit' ? POSES.idle : POSES.dialogCorner;
     wrap.classList.remove('xm-idle', 'xm-waking', 'xm-rubbing', 'xm-open', 'xm-panel-mode', 'xm-speaking');
     wrap.classList.add('xm-waking');
     // 阶段 1：起身；阶段 2 随机打哈欠或揉眼；最后站立并展开菜单。
