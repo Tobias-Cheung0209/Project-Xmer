@@ -1835,7 +1835,8 @@ const App = (function () {
       <div class="home-dashboard">
         <div class="hero-card">
           <div class="hero-lifestyle" aria-hidden="true">
-            <div class="hero-slow">生活很美<br>慢慢来 <i>♥</i></div>
+            <div class="hero-flourish"><i></i><i></i><b>✦</b><em>✧</em></div>
+            <div class="hero-slow">生活很美<br>慢慢来</div>
             <div class="hero-plant"><i></i><i></i><i></i><b></b></div>
             <div class="hero-books"><span>Good</span><span>Things</span><span>Take Time</span></div>
             <img class="hero-perch-cat" src="images/xmer-hero-perch.png?v=2" alt="">
