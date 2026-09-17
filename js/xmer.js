@@ -9,14 +9,35 @@ const Xiaoman = (function () {
   const LS_POS = 'xmer_mascot_pos_v1';
   const LS_POS_OLD = 'xmer_mascot_pos_old';
 
-  let wrap, doll, bubble, menu, panel, panelMask, grid, search, shock, particlesEl, sleepImg;
+  let wrap, doll, bubble, menu, panel, panelMask, grid, search, shock, particlesEl, sleepImg, rubbingImg, peekImg;
   let bubbleTimer = null, wakeTimers = [], roamTimer = null, pauseUntil = 0, mascotMode = 'dynamic';
   let poseTimer = null;
   const POSES = {
     sleep: 'images/xmer-sleeping.png?v=1', idle: 'images/xmer-idle.png?v=1',
     walk: 'images/xmer-walking.png?v=1', stretch: 'images/xmer-stretching.png?v=1',
-    toast: 'images/xmer-toast.png?v=1', surprise: 'images/xmer-surprised.png?v=1'
+    toast: 'images/xmer-toast-loaf.png?v=1', surprise: 'images/xmer-surprised.png?v=1',
+    lickPaw: 'images/xmer-lick-paw.png?v=1', knead: 'images/xmer-knead.png?v=1',
+    headTilt: 'images/xmer-head-tilt.png?v=1', yawn: 'images/xmer-yawn.png?v=1',
+    earScratch: 'images/xmer-ear-scratch.png?v=1', hugTail: 'images/xmer-hug-tail.png?v=1',
+    chinRest: 'images/xmer-chin-rest.png?v=1', noseLick: 'images/xmer-nose-lick.png?v=1'
   };
+  const IDLE_CHOICES = [
+    { name:'toast', weight:24, duration:6500 },
+    { name:'lickPaw', weight:16, duration:4800 },
+    { name:'headTilt', weight:12, duration:4600 },
+    { name:'chinRest', weight:12, duration:6000 },
+    { name:'stretch', weight:8, duration:4200 },
+    { name:'earScratch', weight:8, duration:4300 },
+    { name:'hugTail', weight:7, duration:5600 },
+    { name:'walk', weight:7, duration:3900 },
+    { name:'knead', weight:4, duration:6200 },
+    { name:'noseLick', weight:2, duration:3000 }
+  ];
+
+  function pickIdlePose() {
+    let roll = Math.random() * IDLE_CHOICES.reduce((sum, item) => sum + item.weight, 0);
+    return IDLE_CHOICES.find(item => (roll -= item.weight) < 0) || IDLE_CHOICES[0];
+  }
 
   function setIdlePose(name, duration) {
     if (!sleepImg || !POSES[name]) return;
@@ -88,23 +109,27 @@ const Xiaoman = (function () {
   }
   function startWake() {
     clearWakeTimers();
+    clearTimeout(poseTimer);
     hideBubble();
     hidePanel();
+    const wakeRoute = Math.random() < .5 ? 'yawn' : 'rub';
+    wrap.dataset.wake = wakeRoute;
+    if (rubbingImg) rubbingImg.src = wakeRoute === 'yawn' ? POSES.yawn : 'images/xmer-rubbing.png?v=1';
+    if (peekImg) peekImg.src = POSES.idle;
     wrap.classList.remove('xm-idle', 'xm-waking', 'xm-rubbing', 'xm-open', 'xm-panel-mode', 'xm-speaking');
     wrap.classList.add('xm-waking');
-    // 阶段 1：起身（sleep 缩旋转消失 → rubbing 出现）~450ms
+    // 阶段 1：起身；阶段 2 随机打哈欠或揉眼；最后站立并展开菜单。
     wakeTimers.push(setTimeout(() => {
       if (!wrap.classList.contains('xm-waking')) return;
       wrap.classList.remove('xm-waking');
       wrap.classList.add('xm-rubbing');
-      // 阶段 2：揉眼（rubbing 摇两下）~500ms
       wakeTimers.push(setTimeout(() => {
         if (!wrap.classList.contains('xm-rubbing')) return;
         wrap.classList.remove('xm-rubbing');
         wrap.classList.add('xm-open');
         fitMenu();                     // 进入展开态时测量避让
         clickFx();
-      }, 500));
+      }, wakeRoute === 'yawn' ? 850 : 500));
     }, 450));
   }
   function open() {
@@ -115,6 +140,7 @@ const Xiaoman = (function () {
     clearWakeTimers();
     wrap.classList.add('xm-idle');
     wrap.classList.remove('xm-waking', 'xm-rubbing', 'xm-open', 'xm-panel-mode', 'xm-speaking');
+    delete wrap.dataset.wake;
     hideBubble();
     hidePanel();
     const toastRest = Math.random() < .18;
@@ -346,10 +372,11 @@ const Xiaoman = (function () {
   function scheduleRoam(delay){clearTimeout(roamTimer);if(mascotMode!=='dynamic')return;roamTimer=setTimeout(roamOnce,delay||7000+Math.random()*7000);}
   function roamOnce(){
     if(activityPaused()){scheduleRoam(5000);return;}
-    // 站立、走路与伸懒腰只切换姿势，不改变吉祥物当前落点。
-    setIdlePose(Math.random() < .28 ? 'stretch' : 'walk');
+    // 所有待机动作都只切换姿势，不改变吉祥物当前落点。
+    const pose=pickIdlePose();
+    setIdlePose(pose.name);
     clampToSafeViewport();
-    setTimeout(()=>{setIdlePose('idle',1800);},3900);
+    poseTimer=setTimeout(()=>{setIdlePose('idle',1800);},pose.duration);
     scheduleRoam(9000+Math.random()*9000);
   }
   function applyMode(mode){mascotMode=['dynamic','idle','hidden'].includes(mode)?mode:'dynamic';clearRoam();wrap.classList.toggle('xm-hidden',mascotMode==='hidden');if(mascotMode==='dynamic')scheduleRoam(5000);else if(mascotMode==='idle')clampToSafeViewport();}
@@ -409,7 +436,10 @@ const Xiaoman = (function () {
     shock = $('xm-shock');
     particlesEl = $('xm-particles');
     sleepImg = $('xm-img-sleep');
+    rubbingImg = $('xm-img-rubbing');
+    peekImg = $('xm-img-peek');
     if (!wrap || !doll) return;
+    Object.values(POSES).forEach(src => { const img = new Image(); img.src = src; });
     setIdlePose('sleep');
 
     // 旧版本的位置记录（底部角落）不再适用，清除

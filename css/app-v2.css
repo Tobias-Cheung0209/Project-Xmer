@@ -708,6 +708,8 @@ body.drawer-open #xiaoman-wrap { display: none !important; }
   animation: xm-rub-shake .55s ease-in-out;
   transform-origin: 50% 80%;
 }
+#xiaoman-wrap[data-wake="yawn"].xm-rubbing .xm-img-rubbing{animation:xm-yawn-rise .85s ease-in-out;transform-origin:50% 85%}
+@keyframes xm-yawn-rise{0%{transform:scale(.82) translateY(8px);opacity:.15}35%{transform:scale(1.04) translateY(0);opacity:1}100%{transform:scale(1);opacity:1}}
 
 /* 点头弹起（点击 .xm-nod 类时） */
 @keyframes xm-nod {
@@ -1233,8 +1235,8 @@ body.drawer-open #xiaoman-wrap { display: none !important; }
 .hero-top,.hero-quote { position:relative;z-index:3; }
 
 /* All passive poses share one visual footprint; the viewport clamp still owns positioning. */
-#xiaoman-wrap[data-pose="sleep"],#xiaoman-wrap[data-pose="toast"],#xiaoman-wrap[data-pose="idle"],#xiaoman-wrap[data-pose="walk"],#xiaoman-wrap[data-pose="stretch"] { width:205px;height:176px; }
-#xiaoman-wrap[data-pose="sleep"] #xm-doll,#xiaoman-wrap[data-pose="toast"] #xm-doll,#xiaoman-wrap[data-pose="idle"] #xm-doll,#xiaoman-wrap[data-pose="walk"] #xm-doll,#xiaoman-wrap[data-pose="stretch"] #xm-doll {
+#xiaoman-wrap[data-pose] { width:205px;height:176px; }
+#xiaoman-wrap[data-pose] #xm-doll {
   width:195px;height:156px;bottom:-8px;
 }
 
@@ -1256,8 +1258,8 @@ body.drawer-open #xiaoman-wrap { display: none !important; }
   .hero-perch-cat { right:37px;top:-87px;width:145px;height:110px; }
   .hero-books { right:-2px;top:-43px;width:52px; }
   .hero-plant { right:-16px;top:-91px;transform:scale(.72); }
-  #xiaoman-wrap[data-pose="sleep"],#xiaoman-wrap[data-pose="toast"],#xiaoman-wrap[data-pose="idle"],#xiaoman-wrap[data-pose="walk"],#xiaoman-wrap[data-pose="stretch"] { width:172px;height:150px; }
-  #xiaoman-wrap[data-pose="sleep"] #xm-doll,#xiaoman-wrap[data-pose="toast"] #xm-doll,#xiaoman-wrap[data-pose="idle"] #xm-doll,#xiaoman-wrap[data-pose="walk"] #xm-doll,#xiaoman-wrap[data-pose="stretch"] #xm-doll { width:166px;height:136px; }
+  #xiaoman-wrap[data-pose] { width:172px;height:150px; }
+  #xiaoman-wrap[data-pose] #xm-doll { width:166px;height:136px; }
 }
 @media (max-width:360px) {
   .hero-slow { right:132px;font-size:14px; }
