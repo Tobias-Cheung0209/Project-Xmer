@@ -1,0 +1,16 @@
+# 文档类不发布到公开站点（仅本地留存）
+项目方案.html
+方案总结.md
+改版方案.md
+实施方案.md
+
+# 生成/调试产物不发布
+generated-images/
+
+# 系统/编辑器
+.DS_Store
+Thumbs.db
+
+# 本地处理工具与备份不发布
+tools/
+images/_backup_v15/

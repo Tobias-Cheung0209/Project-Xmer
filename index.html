@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#75866A">
+  <title>Xmer</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon-192.png?v=1" type="image/png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=1">
+  <link rel="icon" sizes="192x192" href="icon-192.png?v=1">
+  <link rel="icon" sizes="512x512" href="icon-512.png?v=1">
+  <!-- iOS PWA 启动屏：消除点击主屏图标时的黑色背景 -->
+  <link rel="apple-touch-startup-image" href="startup-1170x2532.png?v=54" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)">
+  <link rel="apple-touch-startup-image" href="startup-1290x2796.png?v=54" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)">
+  <!-- iOS PWA 全屏 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Xmer">
+  <link rel="stylesheet" href="css/style.css?v=1">
+  <link rel="stylesheet" href="css/app-v2.css?v=1">
+</head>
+<body>
+  <!-- 梦幻背景装饰 -->
+  <div id="bg-decor">
+    <div class="bubble b1"></div>
+    <div class="bubble b2"></div>
+    <div class="bubble b3"></div>
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+    <div class="star s1"></div>
+    <div class="star s2"></div>
+    <div class="star s3"></div>
+    <div class="star s4"></div>
+  </div>
+
+  <!-- 极简顶栏：仅 home + 齿轮 -->
+  <header id="topbar">
+    <button id="menu-toggle" aria-label="首页/菜单">🏠</button>
+    <span class="topbar-app-name">Xmer</span>
+    <button id="tb-gear" title="设置与备份">⚙</button>
+  </header>
+
+  <div id="layout">
+    <aside id="sidebar">
+      <div class="drawer-head">
+        <span class="dh-title"><img src="icon-192.png?v=1" alt="">Xmer</span>
+        <button id="drawer-close" aria-label="关闭">×</button>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <main id="content">
+      <h1 id="content-title" style="display:none">首页</h1>
+      <div id="content-body"></div>
+    </main>
+  </div>
+
+  <div id="backdrop"></div>
+
+  <!-- Xmer 吉祥物：全局导航入口（可拖拽，双姿势 PNG：睡觉 ↔ 探头） -->
+  <div id="xiaoman-wrap" class="xm-idle">
+    <div id="xm-particles" class="xm-particles" aria-hidden="true"></div>
+    <div id="xm-shock" class="xm-shock" aria-hidden="true">!</div>
+    <div id="xm-panel" class="xm-panel" hidden>
+      <div class="xm-panel-head">
+        <span class="xm-panel-title">全部模块</span>
+        <button class="xm-panel-close" id="xm-panel-close" aria-label="关闭">×</button>
+      </div>
+      <input id="xm-search" class="xm-search" type="search" placeholder="搜索模块…" autocomplete="off">
+      <div id="xm-mod-grid" class="xm-mod-grid"></div>
+    </div>
+    <div id="xm-panel-mask" class="xm-panel-mask" hidden></div>
+    <div id="xm-menu" class="xm-menu">
+      <button class="xm-menu-item" data-act="add">📝 快速新建</button>
+      <button class="xm-menu-item" data-act="say">💬 说点啥</button>
+      <button class="xm-menu-item" data-act="modules">🧭 全部模块</button>
+      <button class="xm-menu-item" data-act="settings">⚙️ 设置</button>
+    </div>
+    <div id="xm-bubble" class="xm-bubble" hidden></div>
+    <button id="xm-doll" aria-label="Xmer 吉祥物">
+      <img id="xm-img-sleep" class="xm-img xm-img-sleep" src="images/xmer-sleeping.png?v=1" alt="Xmer" draggable="false">
+      <img id="xm-img-rubbing" class="xm-img xm-img-rubbing" src="images/xmer-rubbing.png?v=1" alt="Xmer" draggable="false">
+      <img id="xm-img-peek" class="xm-img xm-img-peek" src="images/xmer-peek.png?v=1" alt="Xmer" draggable="false">
+    </button>
+  </div>
+
+  <!-- 弹窗 -->
+  <div id="modal">
+    <div id="modal-box">
+      <div id="modal-head">
+        <h3 id="modal-title"></h3>
+        <button id="modal-close" aria-label="关闭">×</button>
+      </div>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="js/config.js?v=1"></script>
+  <script src="js/travel-areas.js?v=54"></script>
+  <script src="js/city-geo.js?v=54"></script>
+  <script src="js/store.js?v=54"></script>
+  <script src="js/topbar.js?v=54"></script>
+  <script src="js/app.js?v=1"></script>
+  <script src="js/xmer.js?v=1"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      Topbar.init();
+      App.init();
+      Xiaoman.init();
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js?v=1').catch(function () {});
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "Xmer",
+  "short_name": "Xmer",
+  "description": "个人规划、生活、学习与成长工作台",
+  "id": "/Project-Xmer/",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F5F0E6",
+  "theme_color": "#75866A",
+  "categories": ["productivity", "lifestyle"],
+  "icons": [
+    {"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}
